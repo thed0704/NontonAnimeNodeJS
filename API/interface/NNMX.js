@@ -187,10 +187,10 @@ class NNMX{
         let result = await this.get(href, useragent)
         console.log(result)
         result = new JSSoup(result)
-        result = result.findAll("script")[1].attrs.src
-        result = await this.get(result, useragent)
-        result = result.match(/https:\/\/[a-zA-Z0-9\.\/\?\=\&\-\,\_\^\+]+/).toString()
-        return result
+        //result = result.findAll("script")[1].attrs.src
+        //result = await this.get(result, useragent)
+        //result = result.match(/https:\/\/[a-zA-Z0-9\.\/\?\=\&\-\,\_\^\+]+/).toString()
+        //return result
     }
     
     async eps_title(href){
