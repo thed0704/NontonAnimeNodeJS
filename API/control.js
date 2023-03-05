@@ -204,6 +204,80 @@ class ControlOD{
         }
     }
 
+    async get_all_info(href, useragent){
+        let response = {}
+        try{
+            let res = await this.Anime.get_anime_info(href)
+            let res_2 = await this.Anime.get_episode_list(href)
+            let concat = {...res, ...res_2}
+            response = {
+                status : 200,
+                data  : concat
+            }
+            return response
+        }catch{
+            response = {
+                status : 400,
+                message : "Invalid request"
+            }
+            return response
+        }
+    }
+
+    async getstreamdata(href, useragent){
+        try{
+            let res = await this.Anime.get_episode_stream_list(href)
+            let title = await this.Anime.eps_title(href)
+            let quality_list = Object.keys(res)
+            let stream_list = []
+            let mega = []
+            for(let i = 0; i < quality_list.length; i++){
+                let q = quality_list[i]
+                q = q.replace(/m/, "")
+                q = q.replace(/p/, "")
+                q = parseInt(q)
+                if(res[quality_list[i]] != 0 ){
+                    stream_list.push({
+                        quality:q,
+                        stream: await this.Anime.get_stream(res[quality_list[i]][0].data_content, useragent)
+                    })
+                }
+            }
+            for(let i = 0; i < quality_list.length; i++){
+                let q = quality_list[i]
+                q = q.replace(/m/, "")
+                q = q.replace(/p/, "")
+                q = parseInt(q)
+                for(let j = 0; j < res[quality_list[i]].length; j++){
+                    //console.log(res[quality_list[i]][j].server)
+                    if(res[quality_list[i]][j].server.trim() === "mega"){
+                        mega.push({
+                            quality:q,
+                            stream: await this.Anime.get_stream(res[quality_list[i]][j].data_content, useragent)
+                        })
+                    }
+                }
+            }
+            let dd = {
+                stream: stream_list,
+                mega: mega,
+                ...title
+            }
+            let r = {
+                status: 200,
+                data: dd
+            }
+
+            return r
+        }catch{
+            let response = {
+                status : 400,
+                message : "Invalid request"
+            }
+            return response
+        }
+    }
+
 
 }
 

@@ -35,24 +35,34 @@ server.on("request", async (req, res) => {
                     res.writeHead(200, headers={"Content-Type": "application/json"})
                     res.end(JSON.stringify(resq))
                 }
+                else if(url[4] == "getallinfo"){ //New
+                    let resq = await Control.get_all_info(url[5], useragent)
+                    res.writeHead(200, headers={"Content-Type": "application/json"})
+                    res.end(JSON.stringify(resq))
+                }
                 else if(url[4] == "episode"){
-                    if(url[5] == "stream"){
+                    if(url[5] == "stream"){ //Deprecated
                         let resq = await Control.get_episode_stream(url[6], useragent)
                         res.writeHead(200, headers={"Content-Type": "application/json"})
                         res.end(JSON.stringify(resq))
                     }
-                    else if(url[5] == "getautostream"){
+                    else if(url[5] == "getautostream"){ //Deprecated
                         let resq = await Control.get_auto_stream(url[6], useragent)
                         res.writeHead(200, headers={"Content-Type": "application/json"})
                         res.end(JSON.stringify(resq))
                     }
-                    else if(url[5] == "getstream"){
+                    else if(url[5] == "getstream"){ //Deprecated
                         let resq = await Control.get_stream_list(url[6], useragent)
                         res.writeHead(200, headers={"Content-Type": "application/json"})
                         res.end(JSON.stringify(resq))
                     }
-                    else if(url[5] == "getmega"){
+                    else if(url[5] == "getmega"){ //Deprecated
                         let resq = await Control.get_mega(url[6], useragent)
+                        res.writeHead(200, headers={"Content-Type": "application/json"})
+                        res.end(JSON.stringify(resq))
+                    }
+                    else if(url[5] == "getstreamdata"){ //new
+                        let resq = await Control.getstreamdata(url[6], useragent)
                         res.writeHead(200, headers={"Content-Type": "application/json"})
                         res.end(JSON.stringify(resq))
                     }
@@ -72,6 +82,8 @@ server.on("request", async (req, res) => {
                 res.end(JSON.stringify(invresponse))
             }
         }
+
+        //NNMX
         if(url[2] == "nnmx"){
             if(url[3] == "search"){
                 let resq = await ControlNNMX.search(url[4])
@@ -84,6 +96,11 @@ server.on("request", async (req, res) => {
                     res.writeHead(200, headers={"Content-Type": "application/json"})
                     res.end(JSON.stringify(resq))
                 }
+                else if(url[4] == "getallinfo"){ //New
+                    let resq = await ControlNNMX.get_all_info(url[5], useragent)
+                    res.writeHead(200, headers={"Content-Type": "application/json"})
+                    res.end(JSON.stringify(resq))
+                }
                 else if(url[4] == "episode"){
                     if(url[5] == "getstream"){
                         let resq = await ControlNNMX.get_stream_list(url[6], useragent)
@@ -92,6 +109,12 @@ server.on("request", async (req, res) => {
                     }
                     else if(url[5] == "getmega"){
                         let resq = await ControlNNMX.get_stream_list(url[6], useragent)
+                        res.writeHead(200, headers={"Content-Type": "application/json"})
+                        res.end(JSON.stringify(resq))
+                    }
+                    
+                    else if(url[5] == "getstreamdata"){ //new
+                        let resq = await ControlNNMX.getstreamdata(url[6], useragent)
                         res.writeHead(200, headers={"Content-Type": "application/json"})
                         res.end(JSON.stringify(resq))
                     }

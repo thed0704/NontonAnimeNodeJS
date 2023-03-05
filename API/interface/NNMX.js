@@ -65,7 +65,7 @@ class NNMX{
 
         result.map((d) => {
             let type = d.find("img").attrs.title.split(":")[0].split(" ")[1]
-            let img = d.find("img").attrs.src
+            let img = Buffer.from(d.find("img").attrs.src).toString("base64")
             let href = Buffer.from(d.find("a").attrs.href).toString("base64")
             let title = d.find("h3", "post-title").attrs.title
             let rating = d.find("div", "btn-warning").text
@@ -89,7 +89,6 @@ class NNMX{
             let recurs = await this.search(next, recursive += 1, true)
             data = [].concat(data, recurs)
         }
-        console.log(data)
         return data
     }
 
@@ -190,6 +189,14 @@ class NNMX{
         result = result.findAll("script")[1].attrs.src
         result = await this.get(result, useragent)
         result = result.match(/https:\/\/[a-zA-Z0-9\.\/\?\=\&\-\,\_\^\+]+/).toString()
+        return result
+    }
+    
+    async eps_title(href){
+        href = Buffer.from(href, "base64").toString("ascii")
+        let result = await this.get(href)
+        result = new JSSoup(result)
+        result = result.find("h1").text
         return result
     }
 
