@@ -1,7 +1,6 @@
 const axios = require("axios");
 const { URLSearchParams } = require("url");
 const JSSoup = require("jssoup").default;
-const cloudscraper = require("cloudscraper")
 
 class NNMX{
     constructor(){
@@ -17,29 +16,7 @@ class NNMX{
             }}).then((res) => {
                 resolve(res.data)
             }).catch((err) => {
-                resolve("")
-            })
-        })
-
-        let data = await promise
-
-        return data
-    }
-
-    async get_cloudflare(url, ua){
-        let useragent = ua === "" ? "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.5249.62 Safari/537.36" : ua;
-        let promise = new Promise((resolve) => {
-            let options = {
-                method: 'GET',
-                headers:{
-                    'User-Agent': useragent
-                },
-                url:url
-            }
-            cloudscraper(options).then((res) => {
-                resolve(res)
-            }).catch((err) => {
-                resolve(err)
+                resolve(err.response.data)
             })
         })
 
@@ -207,14 +184,15 @@ class NNMX{
     }
 
     async uservideo_extractor(href, useragent){
-        let result = await this.get_cloudflare(href, useragent)
+        href = "https://website.com"
+        let result = await this.get(href, useragent)
         console.log(result)
         if(/Just a moment/.test(result)){
-            return "Blocked By Cloudflare"
+            console.log("OK")
+            return href
         }
         result = new JSSoup(result)
         result = result.findAll("script")[1].attrs.src
-        result = await this.get(result, useragent)
         result = result.match(/https:\/\/[a-zA-Z0-9\.\/\?\=\&\-\,\_\^\+]+/).toString()
         return result
     }
