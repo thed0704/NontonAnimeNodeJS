@@ -16,7 +16,7 @@ class NNMX{
             }}).then((res) => {
                 resolve(res.data)
             }).catch((err) => {
-                resolve("")
+                resolve(err)
             })
         })
 
