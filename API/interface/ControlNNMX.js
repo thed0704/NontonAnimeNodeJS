@@ -129,7 +129,7 @@ class ControlNNMX{
     }
 
     async getstreamdata(href, useragent){
-        //try{
+        try{
             let res = await this.Anime.get_episode_stream_list(href)
             let title = await this.Anime.eps_title(href)
             let stream_list = []
@@ -152,13 +152,13 @@ class ControlNNMX{
             }
 
             return r
-        //}catch{
-        //    let response = {
-        //        status : 400,
-        //        message : "Invalid request"
-        //    }
-        //    return response
-        //}
+        }catch{
+            let response = {
+                status : 400,
+                message : "Invalid request"
+            }
+            return response
+        }
     }
 }
 
