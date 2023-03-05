@@ -5,7 +5,7 @@ const JSSoup = require("jssoup").default;
 class NNMX{
     constructor(){
         this.url = "https://nanimex1.com/"
-        this.recursivelimit = 5
+        this.recursivelimit = 3
     }
 
     async get(url, ua){
