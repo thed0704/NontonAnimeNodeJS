@@ -1,11 +1,12 @@
 const axios = require("axios");
 const { URLSearchParams } = require("url");
 const JSSoup = require("jssoup").default;
+const cloudscraper = require("cloudscraper")
 
 class NNMX{
     constructor(){
         this.url = "https://nanimex1.com/"
-        this.recursivelimit = 3
+        this.recursivelimit = 5
     }
 
     async get(url, ua){
@@ -15,6 +16,28 @@ class NNMX{
                 {'User-Agent' : useragent
             }}).then((res) => {
                 resolve(res.data)
+            }).catch((err) => {
+                resolve("")
+            })
+        })
+
+        let data = await promise
+
+        return data
+    }
+
+    async get_cloudflare(url, ua){
+        let useragent = ua === "" ? "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.5249.62 Safari/537.36" : ua;
+        let promise = new Promise((resolve) => {
+            let options = {
+                method: 'GET',
+                headers:{
+                    'User-Agent': useragent
+                },
+                url:url
+            }
+            cloudscraper(options).then((res) => {
+                resolve(res)
             }).catch((err) => {
                 resolve(err)
             })
@@ -184,12 +207,15 @@ class NNMX{
     }
 
     async uservideo_extractor(href, useragent){
-        let result = await this.get(href, useragent)
+        let result = await this.get_cloudflare(href, useragent)
         console.log(result)
-        //result = new JSSoup(result)
-        //result = result.findAll("script")[1].attrs.src
-        //result = await this.get(result, useragent)
-        //result = result.match(/https:\/\/[a-zA-Z0-9\.\/\?\=\&\-\,\_\^\+]+/).toString()
+        if(/Just a moment/.test(result)){
+            return "Blocked By Cloudflare"
+        }
+        result = new JSSoup(result)
+        result = result.findAll("script")[1].attrs.src
+        result = await this.get(result, useragent)
+        result = result.match(/https:\/\/[a-zA-Z0-9\.\/\?\=\&\-\,\_\^\+]+/).toString()
         return result
     }
     
