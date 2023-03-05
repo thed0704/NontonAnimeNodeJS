@@ -184,7 +184,6 @@ class NNMX{
     }
 
     async uservideo_extractor(href, useragent){
-        href = "https://website.com"
         let result = await this.get(href, useragent)
         console.log(result)
         if(/Just a moment/.test(result)){
